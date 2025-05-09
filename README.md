@@ -1,16 +1,12 @@
 # Embedding‑Based Similarity Search with FAISS
 
-**Sirigudi Midhush** (Roll No 220150024)
-
----
+## **Sirigudi Midhush** (Roll No 220150024)
 
 ## 🎯 Motivation
 
 In information‑rich environments—from customer support chatbots to image‑driven product recommendations—finding *semantically* similar items is critical. Keyword matching fails when synonyms or paraphrases appear; pixel‑based image search fails when styles differ. We need systems that compare *meaning*, not just raw text or pixels, and do so in **milliseconds**.
-
 **Why this topic?** I chose this because real‑world search and recommendation systems increasingly rely on vector embeddings for semantic understanding, and FAISS is the industry standard for scaling these searches.
-
----
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 📚 Historical Perspective in Multimodal Learning
 
@@ -19,9 +15,7 @@ In information‑rich environments—from customer support chatbots to image‑d
 | 2019 | **Sentence‑BERT** (Reimers & Gurevych) | Introduced Siamese‑BERT for 768‑dim sentence embeddings, fine‑tuned on STS, reducing inference time from \~65 h to \~5 s on 10 K pairs citeturn0search0.               |
 | 2021 | **CLIP** (Radford et al.)              | Trained vision & language encoders on 400 M image–text pairs using contrastive loss, creating a 512‑dim joint embedding space for zero‑shot transfer citeturn1search0. |
 
-These advances allow us to embed text and images into semantic vector spaces that FAISS can index for high‑speed retrieval.
-
----
+## These advances allow us to embed text and images into semantic vector spaces that FAISS can index for high‑speed retrieval.
 
 ## 🔍 Key Learnings
 
@@ -75,9 +69,10 @@ ivfpq = faiss.IndexIVFPQ(quantizer, d, nlist, m, nbits)
 ivfpq.train(text_embs)
 ivfpq.add(text_embs)
 
-# Query example\ nxq = sbert.encode(["Someone sprints with a football"]);
-D,I = ivfpq.search(xq, k=4)
-print([sentences[i] for i in I[0]])
+# Query example
+xq = sbert.encode(["Someone sprints with a football"])
+D, I = ivfpq.search(xq, k=4)
+print([sentences[i] for i in I[0]])  # semantic nearest sentences
 ```
 
 ### 4. Multimodal CLIP Pipeline
@@ -97,54 +92,45 @@ tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-base-patch16")
 
 ```python
 # Text embeddings column
- ds = ds.map(lambda ex: {'text_emb': clip.get_text_features(**tokenizer(
-     ex['image_description'], return_tensors='pt', truncation=True).to(device)
- )[0].cpu().numpy()})
+ds = ds.map(lambda ex: {'text_emb': clip.get_text_features(**tokenizer(
+    ex['image_description'], return_tensors='pt', truncation=True).to(device)
+)[0].cpu().numpy()})
 # Image embeddings column
- ds = ds.map(lambda ex: {'img_emb': clip.get_image_features(**processor(
-     ex['image'], return_tensors='pt').to(device)
- )[0].cpu().numpy()})
+ds = ds.map(lambda ex: {'img_emb': clip.get_image_features(**processor(
+    ex['image'], return_tensors='pt').to(device)
+)[0].cpu().numpy()})
 
 # Add FAISS indexes
-ds.add_faiss_index('text_emb')
-ds.add_faiss_index('img_emb')
+ds.add_faiss_index(column='text_emb')
+ds.add_faiss_index(column='img_emb')
 ```
 
-### 6. Demo Queries & Figures
+---
 
-```python
-# Text→Image demo
-q = "a snowy day"
-q_emb = clip.get_text_features(**tokenizer([q], return_tensors='pt', truncation=True).to(device))[0].cpu().numpy()
-scores, ex = ds.get_nearest_examples('text_emb', q_emb, k=1)
-print(ex['image_description'][0])
-# display ex['image'][0]
-```
+## 📊 Demo Outputs
+
+**Text→Image** – query “a snowy day” returns:
+
+> *“A man is in the snow. A boy with a huge snow shovel is there too. They are outside a house.”*
 
 !\[]\(/mnt/data/Screenshot 2025-05-09 130327.png)
 
-```python
-# Image→Image demo (beaver)
-from PIL import Image
-import requests
-img = Image.open(requests.get(...).raw)
-img_emb = clip.get_image_features(**processor(img, return_tensors='pt').to(device))[0].cpu().numpy()
-scores, ex = ds.get_nearest_examples('img_emb', img_emb, k=1)
-print(ex['image_description'][0])
-```
+**Image→Image** – beaver photo returns:
+
+> *“Salmon swim upstream but they see a grizzly bear and are in shock. The bear has a smug look on his face when he sees the salmon.”*
 
 !\[]\(/mnt/data/Screenshot 2025-05-09 130349.png)
 
 ---
 
-## 💡 Reflections
+## 💡 Reflections & Next Steps
 
-**What surprised me?** IVF‑PQ’s quantization delivers huge speed gains with only minor accuracy loss.
-**Scope for improvement:** lighter embedding models, re‑ranking top‑k, production microservice.
+* **Surprising**: IVF‑PQ’s quantization yields huge speed gains with only minor accuracy loss.
+* **Future work**: lighter embedding models (e.g. MiniLM), exact re‑ranking on top‑k, and deployment as a REST microservice.
 
 ---
 
 ## 📖 References
 
-1. Reimers & Gurevych. “Sentence‑BERT: Sentence Embeddings using Siamese BERT‑Networks.” EMNLP‑IJCNLP 2019. citeturn0search0
-2. Radford et al. “Learning Transferable Visual Models From Natural Language Supervision.” ICML 2021. citeturn1search0
+1. Nils Reimers & Iryna Gurevych. “Sentence‑BERT: Sentence Embeddings using Siamese BERT‑Networks.” EMNLP‑IJCNLP 2019. citeturn0search0
+2. Alec Radford et al. “Learning Transferable Visual Models From Natural Language Supervision.” ICML 2021. citeturn1search0
