@@ -113,13 +113,17 @@ ds.add_faiss_index(column='img_emb')
 
 > *“A man is in the snow. A boy with a huge snow shovel is there too. They are outside a house.”*
 
-!\[]\(/mnt/data/Screenshot 2025-05-09 130327.png)
+```html
+<img src="/files/mnt/data/Screenshot%202025-05-09%20130327.png" alt="Snow cartoon" style="max-width:400px;"/>
+```
 
 **Image→Image** – beaver photo returns:
 
 > *“Salmon swim upstream but they see a grizzly bear and are in shock. The bear has a smug look on his face when he sees the salmon.”*
 
-!\[]\(/mnt/data/Screenshot 2025-05-09 130349.png)
+```html
+<img src="/files/mnt/data/Screenshot%202025-05-09%20130349.png" alt="Bear and salmon cartoon" style="max-width:400px;"/>
+```
 
 ---
 
