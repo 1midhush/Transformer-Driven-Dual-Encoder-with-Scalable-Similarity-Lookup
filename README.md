@@ -109,23 +109,16 @@ ds.add_faiss_index(column='img_emb')
 
 ## 📊 Demo Outputs
 
-**Text→Image** – query “a snowy day” returns:
+**Text→Image** – query “a snowy day” returns:  
+> “A man is in the snow. A boy with a huge snow shovel is there too. They are outside a house.”
 
-> *“A man is in the snow. A boy with a huge snow shovel is there too. They are outside a house.”*
+![Snowy day retrieval](./Screenshot%202025-05-09%20130327.png)
 
-```html
-<img src="/Screenshot%202025-05-09%20130327.png" alt="Snow cartoon" style="max-width:400px;"/>
-```
+**Image→Image** – beaver photo returns:  
+> “Salmon swim upstream but they see a grizzly bear and are in shock. The bear has a smug look on his face when he sees the salmon.”
 
-**Image→Image** – beaver photo returns:
+![Beaver retrieval](./Screenshot%202025-05-09%20130349.png)
 
-> *“Salmon swim upstream but they see a grizzly bear and are in shock. The bear has a smug look on his face when he sees the salmon.”*
-
-```html
-<img src="/Screenshot%202025-05-09%20130349.png" alt="Bear and salmon cartoon" style="max-width:400px;"/>
-```
-
----
 
 ## 💡 Reflections & Next Steps
 
